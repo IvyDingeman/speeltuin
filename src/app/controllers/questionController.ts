@@ -32,12 +32,12 @@ const deleteQuestion = (req, res) =>
 		: sendErr(res)('not a valid id')
 
 const verifyQuestion = req => Promise.resolve(
-	!req.query ? createErr('no response query')
-	: !req.query.question ? createErr('no question')
-	: !req.query.correct_answer ? createErr('no correct_answer')
+	!req.body ? createErr('no response body')
+	: !req.body.question ? createErr('no question')
+	: !req.body.correct_answer ? createErr('no correct_answer')
 	: {
-		question: req.query.question,
-		correct_answer: req.query.correct_answer === 'true' ? true : false
+		question: req.body.question,
+		correct_answer: req.body.correct_answer
 	})
 
 export { createQuestion, deleteQuestion, findQuestion, findQuestions }

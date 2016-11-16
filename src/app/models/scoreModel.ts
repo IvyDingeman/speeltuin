@@ -22,9 +22,9 @@ const findScoreById = id =>
 	.findOne({_id: new mongoose.Types.ObjectId(id)})
 	.then(score => resolve(score)))
 
-const findScores = () =>
+const findScores = (query) =>
 	new Promise((resolve, reject) => Score
-	.find({})
+	.find(query)
 	.then(scores => resolve(scores)))
 
 const deleteScore = id =>

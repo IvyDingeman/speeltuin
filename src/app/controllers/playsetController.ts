@@ -32,10 +32,10 @@ const deletePlayset = (req, res) =>
 		: sendErr(res)('not a valid id')
 
 const verifyPlayset = req => Promise.resolve(
-	!req.query ? createErr('no response query')
-	: !req.query.name ? createErr('no name')
+	!req.body ? createErr('no response body')
+	: !req.body.name ? createErr('no name')
 	: {
-		name: req.query.name
+		name: req.body.name
 	})
 
 export { createPlayset, deletePlayset, findPlayset, findPlaysets }

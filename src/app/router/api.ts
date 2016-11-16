@@ -7,7 +7,7 @@ import * as scoreController from '../controllers/scoreController'
 
 const router = Router()
 
-router.post('/user/create', userController.createUser)			// TODO: use playground auth middleware
+router.post('/user', userController.createUser)			// TODO: use playground auth middleware
 router.post('/user/auth', userController.findUserByAuth)
 router.delete('/user/:id', userController.deleteUser)			// TODO: use user auth middleware
 router.get('/user', userController.findUsers)

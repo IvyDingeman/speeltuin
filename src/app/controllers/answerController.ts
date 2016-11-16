@@ -33,14 +33,14 @@ const deleteAnswer = (req, res) =>
 	: sendErr(res)('not a valid id')
 
 const verifyAnswer = req => Promise.resolve(
-	!req.query ? createErr('no response query')
-	: !req.query.answer ? createErr('no answer')
-	: !req.query.question ? createErr('no question')
-	: !req.query.user ? createErr('no user')
+	!req.body ? createErr('no response body')
+	: !req.body.answer ? createErr('no answer')
+	: !req.body.question ? createErr('no question')
+	: !req.body.user ? createErr('no user')
 	: {
-		user: new mongoose.Types.ObjectId(req.query.user),
-		question: new mongoose.Types.ObjectId(req.query.question),
-		answer: req.query.answer === 'true' ? true : false,
+		user: new mongoose.Types.ObjectId(req.body.user),
+		question: new mongoose.Types.ObjectId(req.body.question),
+		answer: req.body.answer,
 		timestamp: Date.now()
 	})
 
