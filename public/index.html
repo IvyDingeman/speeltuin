@@ -24,7 +24,7 @@
     <link href="../build/css/custom.min.css" rel="stylesheet">
   </head>
 
-  <body class="nav-md" onhashchange="changePage()">
+  <body class="nav-md" onhashchange="changePage()" onload="changePage()">
     <div class="container body">
       <div class="main_container">
         <div class="col-md-3 left_col">
@@ -120,6 +120,7 @@
       switch (page) {
         case 'home': return renderHome()
         case 'users': return renderUsers()
+        case 'scores': return renderScores()
         case 'playsets': return renderPlaysets()
         case 'questions': return renderQuestions()
         case 'answers': return renderAnswers()
@@ -129,28 +130,95 @@
 
     function renderHome() {
       console.log('home')
+      document.getElementById('pagecontent').innerHTML = '<h1>Welkom!</h1>'
     }
 
     function renderUsers() {
       console.log('users')
       fetch('/api/user')
       .then(res => res.json())
-      .then(users => renderTable('Users', ['username', '_id'], users))
+      .then(users => renderTable('Users', ['username', '_id'], users, ['username', 'password', 'fingerprint']))
+    }
+
+    function renderScores() {
+      console.log('scores')
+      fetch('/api/score')
+      .then(res => res.json())
+      .then(scores => renderTable('Scores', ['playset', 'user', 'score', 'timestamp', '_id'], scores, ['playset', 'user', 'score', 'timestamp']))
     }
 
     function renderPlaysets() {
       console.log('playsets')
+      fetch('/api/playset')
+      .then(res => res.json())
+      .then(playsets => renderTable('Playsets', ['name', '_id'], playsets, ['name']))
     }
 
     function renderQuestions() {
       console.log('questions')
+      fetch('/api/question')
+      .then(res => res.json())
+      .then(playsets => renderTable('Questions', ['question', 'correct_answer', '_id'], playsets, ['question', 'correct_answer']))
     }
 
     function renderAnswers() {
-      console.log('answers')
+      fetch('/api/answer')
+      .then(res => res.json())
+      .then(answers => renderTable('Answers', ['user', 'question', 'answer', 'timestamp'], answers, ['user', 'question', 'answer', 'timestamp']))
     }
 
-    function renderTable(name, fields, docs) {
+    function removeItem(id, model) {
+      if (!model) {
+        const page = window.location.href.split('#')[1]
+
+        switch (page) {
+          case 'users': return removeItem(id, 'user')
+          case 'scores': return removeItem(id, 'score')
+          case 'playsets': return removeItem(id, 'playset')
+          case 'questions': return removeItem(id, 'question')
+          case 'answers': return removeItem(id, 'answer')
+          default: return null
+        }
+      } else {
+        fetch(new Request(`/api/${model}/${id}`, {method: 'delete'}))
+        .then(res => changePage())
+      }
+    }
+
+    function create(formfields, model) {
+
+      if (!model) {
+        const page = window.location.href.split('#')[1]
+
+        switch (page) {
+          case 'users': return create(formfields, 'user')
+          case 'scores': return create(formfields, 'score')
+          case 'playsets': return create(formfields, 'playset')
+          case 'questions': return create(formfields, 'question')
+          case 'answers': return create(formfields, 'answer')
+          default: return null
+        }
+      } else {
+        formfields = formfields.split(',')
+        let newItem = {}
+
+        formfields.forEach((f, i) => {
+          newItem[formfields[i]] = document.getElementById(f).value
+        })
+
+        console.log(newItem)
+
+        $.ajax({
+          url: `/api/${model}`,
+          type: "POST",
+          data: JSON.stringify(newItem),
+          contentType: "application/json",
+          complete: changePage
+        });
+      }
+    }
+
+    function renderTable(name, fields, docs, formfields) {
       document.getElementById('pagecontent').innerHTML = `
       <div class="right_col" role="main">
           <div class="">
@@ -170,19 +238,28 @@
                     <div class="row">
                       <div class="col-sm-12">
                         <div class="card-box table-responsive">
-
+                          <h4>Create new:</h4>
+                          <form>
+                            <div class="form-group">
+                              ${formfields.map(f => `${f} <input type="text" id="${f}"> `).join('')}
+                              <br><br>
+                              <button type="button" onclick="create('${formfields}')" class="btn btn-default">submit</button>
+                            </div>
+                          </form>
                           <table id="datatable-keytable" class="table table-striped table-bordered">
                             <thead>
                               <tr>
                                 ${fields.map(f => `<th>${f}</th>`).join('')}
+                                <th><i class="fa fa-remove"></i> remove</th>
                               </tr>
                             </thead>
 
 
                             <tbody>
                               ${docs.map(d => `<tr>
-                                ${fields.map(f => `<td>${d[f]}</td>`)}
-                              </tr>`)}
+                                ${fields.map(f => `<td>${d[f]}</td>`).join('')}
+                                <td onclick="removeItem('${d._id}')" style="cursor: pointer"><i class="fa fa-remove" style="color: red"></i></td>
+                              </tr>`).join('')}
                             </tbody>
                           </table>
                         </div>

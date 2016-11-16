@@ -45,8 +45,8 @@ const verifyScore = req => Promise.resolve(
 	})
 
 const getParams = req =>
-	req.body.user && req.body.user.match(/^[0-9a-fA-F]{24}$/)
-	? {user: new mongoose.Types.ObjectId(req.body.user)}
+	req.query.user && req.query.user.match(/^[0-9a-fA-F]{24}$/)
+	? {user: new mongoose.Types.ObjectId(req.query.user)}
 	: {}
 
 export { createScore, deleteScore, findScore, findScores }
