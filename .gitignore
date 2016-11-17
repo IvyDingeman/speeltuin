@@ -3,6 +3,7 @@ typings
 dist
 logs
 
+npm-debug.log*
 *.log
 *.iml
 
