@@ -7,6 +7,11 @@
 <body>
 
 	<a href="/playset_simulations">back</a><br><br>
+	<div id="connection">
+		
+	</div>
+	<br>
+	<br>
 	<button onclick="fingerprint()">finger afdruk</button>
 	<button onclick="startslide()">begin glijden</button>
 	<button onclick="endslide()">is beneden</button>
@@ -18,16 +23,21 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 	<script>
 
-		const url = 'http://localhost:3000'
+		const url = 'http://neato.tf:1337'
 		const id = '582b1a52402fe405ed945901'
 		const maxSlideTime = 6000
 
 		let user, sliding, slideStart, slideEnd;
 
+		document.getElementById('connection').innerHTML = `
+			<h3>connected to: ${url}</h3>
+			<h3>playset id: ${id}</h3>
+		`
+
 		function fingerprint() {
 			if (!sliding || (Date.now() - slideStart) > maxSlideTime) {
 				clear()
-				user = { username: 'timmy',	_id: '582c6acdb5a0c73b86f8c459' }
+				user = { username: 'Sam',	_id: '582c6154b5a0c73b86f8c453' }
 				document.getElementById('results').innerHTML += `<h3>gebruiker : ${JSON.stringify(user)}</h3><br>`
 			}
 		}
@@ -57,9 +67,8 @@
 						timestamp: Date.now()
 					}),
 					contentType: "application/json",
-					complete: () => {
+					complete: () =>
 						document.getElementById('results').innerHTML += `<h3>data opgeslagen!</h3><br>`
-					}
 				});
 			}
 		}

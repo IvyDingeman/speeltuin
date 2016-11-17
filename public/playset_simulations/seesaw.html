@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+
+	<a href="/playset_simulations">back</a><br><br>
+	<div id="connection">
+		
+	</div>
+	<br>
+	<br>
+	<button onclick="fingerprint(1)">finger afdruk 1</button>
+	<button onclick="fingerprint(2)">finger afdruk 2</button>
+	<button onclick="startseesaw()">begin wipwap</button>
+	<button onclick="endseesaw()">stop wipwap</button>
+	<br>
+	<div id="results">
+
+	</div>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<script>
+
+		const url = 'http://localhost:3000'
+		const id = '582ae8ad70f9a3022088bcd3'
+		const maxAuthTime = 30000
+
+		let user1, user2, user1Timeout, user2Timeout, active, start, end;
+
+		document.getElementById('connection').innerHTML = `
+			<h3>connected to: ${url}</h3>
+			<h3>playset id: ${id}</h3>
+		`
+
+		function fingerprint(n) {
+			if (n === 1 && (!user1 || user1timeout < Date.now())) {
+				if (!active) {
+					user1timeout = Date.now() + maxAuthTime
+					user1 = { username: 'Sam',	_id: '582c6154b5a0c73b86f8c453' }
+					document.getElementById('results').innerHTML += `<h3>gebruiker1 : ${JSON.stringify(user1)}</h3><br>`
+				}
+			} else if (n === 2 && (!user2 || user2timeout < Date.now())) {
+				if (!active) {
+					user2timeout = Date.now() + maxAuthTime
+					user2 = { username: 'timmy',	_id: '582c6acdb5a0c73b86f8c459' }
+					document.getElementById('results').innerHTML += `<h3>gebruiker2 : ${JSON.stringify(user2)}</h3><br>`	
+				}
+			}
+		}
+
+		function startseesaw() {
+			if (user1 && user2) {
+				active = true
+				start = Date.now()
+				document.getElementById('results').innerHTML += `<h3>begin wipwap : ${start}</h3><br>`
+			}
+		}
+
+		function endseesaw() {
+			if (active && start) {
+				end = Date.now()
+				document.getElementById('results').innerHTML += `<h3>eind wipwap : ${end}</h3><br>
+				<h3>duratie in ms : ${end - start}</h3><br>`
+
+				$.ajax({
+					url: `${url}/api/score`,
+					type: "POST",
+					data: JSON.stringify({
+						playset: id,
+						user: user1._id,
+						score: end - start,
+						timestamp: Date.now()
+					}),
+					contentType: "application/json",
+					complete: () =>
+						document.getElementById('results').innerHTML += `<h3>data gebruiker 1 opgeslagen!</h3><br>`
+				});
+
+				$.ajax({
+					url: `${url}/api/score`,
+					type: "POST",
+					data: JSON.stringify({
+						playset: id,
+						user: user2._id,
+						score: end - start,
+						timestamp: Date.now()
+					}),
+					contentType: "application/json",
+					complete: () =>
+						document.getElementById('results').innerHTML += `<h3>data gebruiker 2 opgeslagen!</h3><br>`
+				});
+
+				
+				setTimeout(() => clear(), 3000)
+			}
+		}
+
+		function clear() {
+			console.log('clearing')
+			user1, user2, active, start, end = false
+			user1Timeout, user2Timeout = 0
+			document.getElementById('results').innerHTML = ''
+		}
+	</script>
+</body>
+</html>
