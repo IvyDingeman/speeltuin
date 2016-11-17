@@ -99,7 +99,7 @@ function changePage() {
     }
 
 	function escapeHtml(unsafe) {
-		return unsafe
+		return typeof unsafe !== 'string' ? unsafe : unsafe
 			.replace(/&/g, "&amp;")
 			.replace(/</g, "&lt;")
 			.replace(/>/g, "&gt;")
@@ -146,7 +146,7 @@ function changePage() {
 
                             <tbody>
                               ${docs.map(d => `<tr>
-                                ${escapeHtml(fields.map(f => `<td>${d[f]}</td>`).join(''))}
+                                ${fields.map(f => `<td>${escapeHtml(d[f])}</td>`).join('')}
                                 <td onclick="removeItem('${d._id}')" style="cursor: pointer"><i class="fa fa-remove" style="color: red"></i></td>
                               </tr>`).join('')}
                             </tbody>
