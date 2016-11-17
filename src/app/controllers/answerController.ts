@@ -20,7 +20,7 @@ const findAnswer = (req, res) =>
 	: sendErr(res)('not a valid id')
 
 const findAnswers = (req, res) =>
-	model.findAnswers()
+	model.findAnswers(getParams(req))
 	.then(answers => sendJSON(res)(answers))
 
 const deleteAnswer = (req, res) =>
@@ -43,5 +43,10 @@ const verifyAnswer = req => Promise.resolve(
 		answer: req.body.answer,
 		timestamp: Date.now()
 	})
+
+const getParams = req =>
+	req.query.user && req.query.user.match(/^[0-9a-fA-F]{24}$/)
+	? {user: new mongoose.Types.ObjectId(req.query.user)}
+	: {}
 
 export { createAnswer, deleteAnswer, findAnswer, findAnswers }
