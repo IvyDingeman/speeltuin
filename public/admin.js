@@ -98,6 +98,15 @@ function changePage() {
       }
     }
 
+	function escapeHtml(unsafe) {
+		return unsafe
+			.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;")
+			.replace(/"/g, "&quot;")
+			.replace(/'/g, "&#039;");
+	}
+
     function renderTable(name, fields, docs, formfields) {
       document.getElementById('pagecontent').innerHTML = `
       <div class="right_col" role="main">
@@ -137,7 +146,7 @@ function changePage() {
 
                             <tbody>
                               ${docs.map(d => `<tr>
-                                ${fields.map(f => `<td>${d[f]}</td>`).join('')}
+                                ${escapeHtml(fields.map(f => `<td>${d[f]}</td>`).join(''))}
                                 <td onclick="removeItem('${d._id}')" style="cursor: pointer"><i class="fa fa-remove" style="color: red"></i></td>
                               </tr>`).join('')}
                             </tbody>
