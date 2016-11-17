@@ -46,7 +46,7 @@ function changePage() {
     function renderAnswers() {
       fetch('/api/answer')
       .then(res => res.json())
-      .then(answers => renderTable('Answers', ['user', 'question', 'answer', 'timestamp'], answers, ['user', 'question', 'answer', 'timestamp']))
+      .then(answers => renderTable('Answers', ['user', 'question', 'answer', 'timestamp', '_id'], answers, ['user', 'question', 'answer', 'timestamp']))
     }
 
     function removeItem(id, model) {

@@ -13,7 +13,7 @@ const createAnswer = (req, res) =>
 
 const findAnswer = (req, res) =>
 	req.params.id && req.params.id.match(/^[0-9a-fA-F]{24}$/)
-	? model.findAnswerById(req.params.id)
+	? model.findAnswerByQuestionId(req.params.id)
 		.then(answer => !answer
 			? sendErr(res)('answer does not exist')
 			: sendJSON(res)(answer))

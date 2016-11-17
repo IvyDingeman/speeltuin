@@ -17,9 +17,14 @@ const createAnswer = answer =>
 		.save()
 		.then(answer => resolve(answer)))
 
-const findAnswerById = id =>
+const findAnswerByQuestionId = id =>
 	new Promise((resolve, reject) => Answer
 	.findOne({question: new mongoose.Types.ObjectId(id)})
+	.then(answer => resolve(answer)))
+
+const findAnswerById = id =>
+	new Promise((resolve, reject) => Answer
+	.findOne({_id: new mongoose.Types.ObjectId(id)})
 	.then(answer => resolve(answer)))
 
 const findAnswers = query =>
@@ -32,4 +37,4 @@ const deleteAnswer = id =>
 	.remove({_id: new mongoose.Types.ObjectId(id)})
 	.then(answer => resolve('deleted')))
 
-export { createAnswer, findAnswerById, findAnswers, deleteAnswer }
+export { createAnswer, findAnswerById, findAnswerByQuestionId, findAnswers, deleteAnswer }
