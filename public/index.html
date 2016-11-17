@@ -10,18 +10,18 @@
     <title>Speeltuin admin</title>
 
     <!-- Bootstrap -->
-    <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/theme/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
-    <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/theme/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <!-- iCheck -->
-    <link href="../vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+    <link href="/theme/vendors/iCheck/skins/flat/green.css" rel="stylesheet">
     <!-- bootstrap-progressbar -->
-    <link href="../vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+    <link href="/theme/vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
     <!-- jVectorMap -->
-    <link href="css/maps/jquery-jvectormap-2.0.3.css" rel="stylesheet"/>
+    <link href="/theme/production/css/maps/jquery-jvectormap-2.0.3.css" rel="stylesheet"/>
 
     <!-- Custom Theme Style -->
-    <link href="../build/css/custom.min.css" rel="stylesheet">
+    <link href="/theme/build/css/custom.min.css" rel="stylesheet">
   </head>
 
   <body class="nav-md" onhashchange="changePage()" onload="changePage()">
@@ -48,6 +48,7 @@
                   <li><a href="#playsets"><i class="fa fa-plug"></i> Playsets</a></li>
                   <li><a href="#questions"><i class="fa fa-comments"></i> Questions</a></li>
                   <li><a href="#answers"><i class="fa fa-exclamation"></i> Answers</a></li>
+                  <li><a href="/playset_simulations"><i class="fa fa-area-chart"></i> Playset simulations</a></li>
                 </ul>
               </div>
             </div>
@@ -78,44 +79,45 @@
     </div>
 
     <!-- jQuery -->
-    <script src="../vendors/jquery/dist/jquery.min.js"></script>
+    <script src="/theme/vendors/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap -->
-    <script src="../vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/theme/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- FastClick -->
-    <script src="../vendors/fastclick/lib/fastclick.js"></script>
+    <script src="/theme/vendors/fastclick/lib/fastclick.js"></script>
     <!-- NProgress -->
-    <script src="../vendors/nprogress/nprogress.js"></script>
+    <script src="/theme/vendors/nprogress/nprogress.js"></script>
     <!-- Chart.js -->
-    <script src="../vendors/Chart.js/dist/Chart.min.js"></script>
+    <script src="/theme/vendors/Chart.js/dist/Chart.min.js"></script>
     <!-- gauge.js -->
-    <script src="../vendors/bernii/gauge.js/dist/gauge.min.js"></script>
+    <script src="/theme/vendors/bernii/gauge.js/dist/gauge.min.js"></script>
     <!-- bootstrap-progressbar -->
-    <script src="../vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <script src="/theme/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
     <!-- iCheck -->
-    <script src="../vendors/iCheck/icheck.min.js"></script>
+    <script src="/theme/vendors/iCheck/icheck.min.js"></script>
     <!-- Skycons -->
-    <script src="../vendors/skycons/skycons.js"></script>
+    <script src="/theme/vendors/skycons/skycons.js"></script>
     <!-- Flot -->
-    <script src="../vendors/Flot/jquery.flot.js"></script>
-    <script src="../vendors/Flot/jquery.flot.pie.js"></script>
-    <script src="../vendors/Flot/jquery.flot.time.js"></script>
-    <script src="../vendors/Flot/jquery.flot.stack.js"></script>
-    <script src="../vendors/Flot/jquery.flot.resize.js"></script>
+    <script src="/theme/vendors/Flot/jquery.flot.js"></script>
+    <script src="/theme/vendors/Flot/jquery.flot.pie.js"></script>
+    <script src="/theme/vendors/Flot/jquery.flot.time.js"></script>
+    <script src="/theme/vendors/Flot/jquery.flot.stack.js"></script>
+    <script src="/theme/vendors/Flot/jquery.flot.resize.js"></script>
     <!-- Flot plugins -->
-    <script src="js/flot/jquery.flot.orderBars.js"></script>
-    <script src="js/flot/date.js"></script>
-    <script src="js/flot/jquery.flot.spline.js"></script>
-    <script src="js/flot/curvedLines.js"></script>
+    <script src="/theme/production/js/flot/jquery.flot.orderBars.js"></script>
+    <script src="/theme/production/js/flot/date.js"></script>
+    <script src="/theme/production/js/flot/jquery.flot.spline.js"></script>
+    <script src="/theme/production/js/flot/curvedLines.js"></script>
     <!-- jVectorMap -->
-    <script src="js/maps/jquery-jvectormap-2.0.3.min.js"></script>
-    <!-- bootstrap-daterangepicker -->
-    <script src="js/moment/moment.min.js"></script>
-    <script src="js/datepicker/daterangepicker.js"></script>
+    <script src="/theme/production/js/maps/jquery-jvectormap-2.0.3.min.js"></script>
 
     <!-- Custom Theme Scripts -->
-    <script src="../build/js/custom.min.js"></script>
+    <script src="/theme/build/js/custom.min.js"></script>
     <script>
     function changePage() {
+      if (document.getElementsByClassName('current-page')[0]) {
+        document.getElementsByClassName('current-page')[0].className = ''
+      }
+
       const page = window.location.href.split('#')[1]
       switch (page) {
         case 'home': return renderHome()
@@ -129,33 +131,28 @@
     }
 
     function renderHome() {
-      console.log('home')
       document.getElementById('pagecontent').innerHTML = '<h1>Welkom!</h1>'
     }
 
     function renderUsers() {
-      console.log('users')
       fetch('/api/user')
       .then(res => res.json())
       .then(users => renderTable('Users', ['username', '_id'], users, ['username', 'password', 'fingerprint']))
     }
 
     function renderScores() {
-      console.log('scores')
       fetch('/api/score')
       .then(res => res.json())
       .then(scores => renderTable('Scores', ['playset', 'user', 'score', 'timestamp', '_id'], scores, ['playset', 'user', 'score', 'timestamp']))
     }
 
     function renderPlaysets() {
-      console.log('playsets')
       fetch('/api/playset')
       .then(res => res.json())
       .then(playsets => renderTable('Playsets', ['name', '_id'], playsets, ['name']))
     }
 
     function renderQuestions() {
-      console.log('questions')
       fetch('/api/question')
       .then(res => res.json())
       .then(playsets => renderTable('Questions', ['question', 'correct_answer', '_id'], playsets, ['question', 'correct_answer']))
@@ -206,8 +203,6 @@
           newItem[formfields[i]] = document.getElementById(f).value
         })
 
-        console.log(newItem)
-
         $.ajax({
           url: `/api/${model}`,
           type: "POST",
@@ -241,7 +236,7 @@
                           <h4>Create new:</h4>
                           <form>
                             <div class="form-group">
-                              ${formfields.map(f => `${f} <input type="text" id="${f}"> `).join('')}
+                              ${formfields.map(f => `<label style="width: 150px;">${f}</label> <input type="text" id="${f}"><br> `).join('')}
                               <br><br>
                               <button type="button" onclick="create('${formfields}')" class="btn btn-default">submit</button>
                             </div>

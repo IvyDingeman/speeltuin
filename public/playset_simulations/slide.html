@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+
+	<a href="/playset_simulations">back</a><br><br>
+	<button onclick="fingerprint()">finger afdruk</button>
+	<button onclick="startslide()">begin glijden</button>
+	<button onclick="endslide()">is beneden</button>
+	<br>
+	<div id="results">
+
+	</div>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<script>
+
+		const url = 'http://localhost:3000'
+		const id = '582b1a52402fe405ed945901'
+		const maxSlideTime = 6000
+
+		let user, sliding, slideStart, slideEnd;
+
+		function fingerprint() {
+			if (!sliding || (Date.now() - slideStart) > maxSlideTime) {
+				clear()
+				user = { username: 'timmy',	_id: '582c6acdb5a0c73b86f8c459' }
+				document.getElementById('results').innerHTML += `<h3>gebruiker : ${JSON.stringify(user)}</h3><br>`
+			}
+		}
+
+		function startslide() {
+			if (user) {
+				sliding = true
+				slideStart = Date.now()
+				document.getElementById('results').innerHTML += `<h3>begin glijden : ${slideStart}</h3><br>`
+			}
+		}
+
+		function endslide() {
+			if (sliding && slideStart) {
+				sliding = false
+				slideEnd = Date.now()
+				document.getElementById('results').innerHTML += `<h3>eind glijden : ${slideEnd}</h3><br>
+				<h3>duratie in ms : ${slideEnd - slideStart}</h3><br>`
+
+				$.ajax({
+					url: `${url}/api/score`,
+					type: "POST",
+					data: JSON.stringify({
+						playset: id,
+						user: user._id,
+						score: slideEnd - slideStart,
+						timestamp: Date.now()
+					}),
+					contentType: "application/json",
+					complete: () => {
+						document.getElementById('results').innerHTML += `<h3>data opgeslagen!</h3><br>`
+					}
+				});
+			}
+		}
+
+		function clear() {
+			console.log('clearing')
+			user, sliding, slideStart, slideEnd = false
+			document.getElementById('results').innerHTML = ''
+		}
+	</script>
+</body>
+</html>
